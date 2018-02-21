@@ -10,6 +10,9 @@ def get_args():
         metavar='C',
         default='None',
         help='The Configuration file')
+    argparse.add_argument('--content', default="images/content/*")
+    argparse.add_argument('--style', default="images/style/*")
+    argparse.add_argument('-s', '--stylize', default=False, action='store_true')
     args = argparser.parse_args()
     return args
 
