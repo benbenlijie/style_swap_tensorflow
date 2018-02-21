@@ -24,9 +24,13 @@ Paper: https://arxiv.org/abs/1612.04337
 Download [VGG16 model](http://download.tensorflow.org/models/vgg_16_2016_08_28.tar.gz) from Tensorflow Slim. Extract the file vgg_16.ckpt. Then copy it to the folder pretrained/ 
 
 ## Usage
-Stylizing images:
+###Stylizing images:
 ```
 python main.py -c config/example.json -s --content images/content/*.jpg --style images/style/style_1_image_60.png
+```
+### Video stylization
+```
+python main.py -c config/example.json -s --content videos/timelapse1_orig.mp4 --style images/style/style_1_image_60.png
 ```
 
 
@@ -35,8 +39,6 @@ python main.py -c config/example.json -s --content images/content/*.jpg --style 
 python main.py -c config/example.json
 ```
 
-## ToDo
-Video stylization
 
 ## Style swap
 Φ(.) is the function represented by a fully convolutional part of a pretrained CNN that maps an image from RGB to some intermediate activation space. So Φ(C) is the activation of content, and Φ(S) is the activation of style. 

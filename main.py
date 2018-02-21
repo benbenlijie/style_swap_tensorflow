@@ -4,7 +4,7 @@ from data_loader import *
 from models.style_swap_model import StyleSwapModel
 from trainers.style_swap_trainer import StyleSwapTrainer
 from utils.config import process_config
-from utils.utils import get_args, save_image, load_image, get_data_files
+from utils.utils import *
 import numpy as np
 import os
 
@@ -16,26 +16,43 @@ def evaluate(config, content_pattern, style_pattern):
 
     model = StyleSwapModel(config, [None, None])
 
-    for c in contents:
-        ci = load_image(c, 512)
-        save_folder = os.path.split(c)[0]
-        c_name = os.path.splitext(os.path.split(c)[-1])[0]
+    for c_file_path in contents:
+        if is_image(c_file_path):
+            ci = load_image(c_file_path, 512)
+            save_folder = os.path.split(c_file_path)[0]
+            c_name = os.path.splitext(os.path.split(c_file_path)[-1])[0]
+            evaluate_size = ci.shape[:2]
+
+            def save(stylize_fn, s_name):
+                save_image(stylize_fn(ci), "{}/{}_{}.jpg".format(save_folder, c_name, s_name))
+        if is_video(c_file_path):
+            cap, fps, size = get_video_capture(c_file_path)
+            evaluate_size = size[::-1]
+
+            def save(stylize_fn, s_name):
+                video_stylize(c_file_path, s_name, cap, stylize_fn)
         with tf.Graph().as_default():
-            model.evaluate_height, model.evaluate_width = ci.shape[:2]
+            model.evaluate_height, model.evaluate_width = evaluate_size
             model.init_evaluate_model()
             with tf.Session() as sess:
                 if model.init_op is not None:
                     model.init_op(sess)
                 model.load(sess)
 
-                for s in styles:
-                    si = load_image(s, 512)
-                    inversed = sess.run(model.evaluate_op, feed_dict={
-                        model.input_image: ci, model.style_image: si,
-                    })
-                    inversed = np.array(inversed, dtype=np.uint8)
-                    s_name = os.path.splitext(os.path.split(s)[-1])[0]
-                    save_image(inversed, "{}/{}_{}.jpg".format(save_folder, c_name, s_name))
+                for s_file_path in styles:
+                    if is_image(s_file_path):
+                        si = load_image(s_file_path, 512)
+
+                        def stylize(origin):
+                            inversed = sess.run(model.evaluate_op, feed_dict={
+                                model.input_image: origin, model.style_image: si,
+                            })
+                            return np.array(inversed, dtype=np.uint8)
+
+                        s_name = os.path.splitext(os.path.split(s_file_path)[-1])[0]
+                        save(stylize, s_name)
+        if is_video(c_file_path):
+            cap.release()
 
 
 def train(config):

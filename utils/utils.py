@@ -1,6 +1,12 @@
 import argparse
 import tensorflow as tf
 import scipy.misc as sc
+import cv2
+import os
+
+
+VIDEO_EXTS = [".mp4", ".avi", ".mkv", ".flv"]
+IMG_EXTS = [".jpg", ".png"]
 
 
 def get_args():
@@ -58,3 +64,44 @@ def load_image(file_path, min_side=None):
             rate = min_side * 1.0 / min(height, width)
             img = sc.imresize(img, [int(height * rate), int(width * rate)])
     return img
+
+
+def is_video(file_path):
+    ext = os.path.splitext(file_path)[-1].lower()
+    return ext in VIDEO_EXTS
+
+
+def is_image(file_path):
+    ext = os.path.splitext(file_path)[-1].lower()
+    return ext in IMG_EXTS
+
+
+def get_video_capture(file_path):
+    capture = cv2.VideoCapture(file_path)
+    fps = capture.get(cv2.cv2.CAP_PROP_FPS)
+    size = (int(capture.get(cv2.cv2.CAP_PROP_FRAME_WIDTH)),
+            int(capture.get(cv2.cv2.CAP_PROP_FRAME_HEIGHT)))
+    return capture, fps, size
+
+
+def video_stylize(file_path, style_name, capture, style_fn):
+    folder, file_name = os.path.split(file_path)
+    file_name = os.path.join(folder, os.path.splitext(file_name)[0] + "_" + style_name + ".avi")
+    print("save video at", file_name)
+    fps = capture.get(cv2.cv2.CAP_PROP_FPS)
+    size = (int(capture.get(cv2.cv2.CAP_PROP_FRAME_WIDTH)),
+            int(capture.get(cv2.cv2.CAP_PROP_FRAME_HEIGHT)))
+    writer = cv2.VideoWriter(file_name, cv2.VideoWriter_fourcc(*"XVID"), fps, size)
+    count = 1
+    while capture.isOpened():
+        ret, frame = capture.read()
+        print(count)
+        count += 1
+        if ret:
+            s = style_fn(frame)
+            s = cv2.resize(s, size)
+            writer.write(cv2.cvtColor(s, cv2.COLOR_RGB2BGR))
+        else:
+            break
+    writer.release()
+
