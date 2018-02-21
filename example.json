@@ -1,0 +1,17 @@
+{
+
+  "checkpoint_exclude_scopes": "vgg_16/fc",
+  "loss_model_file": "/root/data/vgg/vgg_16.ckpt",
+  "log_name": "1",
+
+  "learning_rate": 0.00003,
+
+  "num_sampels": 1000,
+  "record_file_name": "/root/data/train2017/image_train_*.tfrecord",
+  "Image_files": "/root/project/style/*.jpg",
+  "exp_name": "style_swap",
+  "batch_size": 2,
+  "num_epochs": 2,
+  "weight_regulation_scale": 0.01,
+  "net_name": "vgg_16"
+}

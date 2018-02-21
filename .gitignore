@@ -1,0 +1,8 @@
+/.idea
+/.ipynb_checkpoints
+/experiments
+/style.zip
+/style_swap_tensorflow.zip
+/test.ipynb
+/base/__pycache__/*.pyc
+*.pyc

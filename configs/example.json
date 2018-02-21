@@ -1,0 +1,19 @@
+{
+
+  "checkpoint_exclude_scopes": "vgg_16/fc",
+  "loss_model_file": "E:/Github/fast-style-transfer/pretrained/vgg_16.ckpt",
+  "log_name": "1",
+
+  "learning_rate": 0.001,
+
+  "num_sampels": 1000,
+  "record_file_name": "e:\\Github\\fast-style-transfer\\datasets\\image_train_*.tfrecord",
+  "Image_files": "e:\\Github\\style-swap\\images\\style\\*.jpg",
+  "exp_name": "style_swap",
+  "batch_size": 2,
+  "num_epochs": 2,
+  "weight_regulation_scale": 0.05,
+  "net_name": "vgg_16",
+
+  "note": "try to modify the weight_regulation_scale"
+}
