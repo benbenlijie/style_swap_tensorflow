@@ -58,7 +58,7 @@ def main():
         config = process_config(args.config)
 
     except Exception as e:
-        print("missing or invalid arguments")
+        print("missing or invalid arguments", e)
         exit(0)
     tf.logging.set_verbosity(tf.logging.INFO)
 
