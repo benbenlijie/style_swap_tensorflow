@@ -37,3 +37,12 @@ python main.py -c config/example.json
 
 ## ToDo
 Video stylization
+
+## Style swap
+Φ(.) is the function represented by a fully convolutional part of a pretrained CNN that maps an image from RGB to some intermediate activation space. So Φ(C) is the activation of content, and Φ(S) is the activation of style. 
+
+Extract a set of patches for Φ(C) and Φ(S). The target of "Style Swap" is to find a closest-matching style patch for each content patch, and replace it. 
+<div>
+  <img src="figures/diagram.png">
+</div>
+ 
